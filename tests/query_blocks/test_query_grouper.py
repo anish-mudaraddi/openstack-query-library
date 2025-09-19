@@ -1,12 +1,10 @@
 from unittest.mock import call, patch
+
 import pytest
 
-from openstackquery.query_blocks.query_grouper import QueryGrouper
 from openstackquery.enums.props.server_properties import ServerProperties
-
 from openstackquery.exceptions.parse_query_error import ParseQueryError
-
-
+from openstackquery.query_blocks.query_grouper import QueryGrouper
 from tests.mocks.mocked_props import MockProperties
 
 
@@ -162,3 +160,15 @@ def test_run_group_by_with_include_missing(run_group_by_runner, mock_results_con
     run_group_by_runner(
         MockProperties.PROP_1, mock_group_mappings, True, mock_obj_list, expected_out
     )
+
+
+def test_parse_group_by_with_string_input_uses_from_string(instance):
+    """
+    Tests parse_group_by calls from_string when string is passed instead of enum
+    """
+    with patch.object(
+        MockProperties, "from_string", return_value=MockProperties.PROP_1
+    ) as mock_from_string:
+        instance.parse_group_by("prop_1")
+
+        mock_from_string.assert_called_once_with("prop_1")
