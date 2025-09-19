@@ -547,6 +547,10 @@ def test_parse_select_with_string_alias(instance):
 
 
 def test_convert_csv_to_string(instance):
+    """
+    Tests that _convert_to_csv_string correctly converts a list of dictionaries
+    into a CSV string with proper headers and values.
+    """
     data = [
         {"a": 1, "b": 2},
         {"a": 3, "b": 4},
@@ -557,16 +561,33 @@ def test_convert_csv_to_string(instance):
 
 
 def test_convert_to_csv_string_raises_on_empty_data(instance):
+    """
+    Tests that _convert_to_csv_string raises RuntimeError when given an empty list.
+    """
     with pytest.raises(RuntimeError):
         instance._convert_to_csv_string([])
 
 
 def test_convert_to_csv_string_raises_on_empty_dict_keys(instance):
+    """
+    Tests that _convert_to_csv_string raises RuntimeError when given a list with empty dicts.
+    """
     with pytest.raises(RuntimeError):
         instance._convert_to_csv_string([{}])
 
 
+def test_flatten_list_with_empty_data():
+    """
+    Tests that _flatten_list returns an empty dict when given empty input.
+    """
+    result = QueryOutput._flatten_list([])
+    assert result == {}  # pylint: disable=C1803
+
+
 def test_to_csv_ungrouped(instance):
+    """
+    Tests that to_csv produces correct CSV output from ungrouped data.
+    """
     mock_results_container = MagicMock()
     mock_results_container.to_props.return_value = [
         {"prop1": "val1", "prop2": "val2"},
@@ -580,6 +601,9 @@ def test_to_csv_ungrouped(instance):
 
 
 def test_to_csv_grouped(instance):
+    """
+    Tests that to_csv produces correct CSV output including group headers from grouped data.
+    """
     mock_results_container = MagicMock()
     mock_results_container.to_props.return_value = {
         "group1": [
@@ -600,6 +624,9 @@ def test_to_csv_grouped(instance):
 
 
 def test_to_csv_grouped_with_flatten(instance):
+    """
+    Tests that to_csv with flatten_groups=True produces a flat CSV with a group column and no group headers.
+    """
     mock_results_container = MagicMock()
     mock_results_container.to_props.return_value = {
         "group1": [
@@ -624,6 +651,9 @@ def test_to_csv_grouped_with_flatten(instance):
 
 
 def test_to_csv_with_group_filtering(instance):
+    """
+    Tests that to_csv correctly filters groups when a groups list is provided.
+    """
     mock_results_container = MagicMock()
     # Simulate grouped results from the container
     grouped_data = {
@@ -656,7 +686,7 @@ def test_to_csv_with_group_filtering(instance):
 
 def test_to_json_empty_results(instance):
     """
-    Tests to_json with no groups or flatten
+    Tests to_json with no groups or flatten and empty result set returns an empty JSON array.
     """
     mock_results_container = MagicMock()
     mock_results_container.to_props.return_value = []
@@ -668,6 +698,9 @@ def test_to_json_empty_results(instance):
 
 
 def test_to_json_ungrouped_results(instance):
+    """
+    Tests to_json with ungrouped data returns correct JSON list.
+    """
     mock_results_container = MagicMock()
     mock_results_container.to_props.return_value = [
         {"prop1": "val1", "prop2": "val2"},
@@ -684,6 +717,9 @@ def test_to_json_ungrouped_results(instance):
 
 
 def test_to_json_grouped_results(instance):
+    """
+    Tests to_json with grouped data returns a JSON object keyed by group names.
+    """
     mock_results_container = MagicMock()
     grouped_data = {
         "group1": [
@@ -701,6 +737,9 @@ def test_to_json_grouped_results(instance):
 
 
 def test_to_json_flatten_groups(instance):
+    """
+    Tests to_json with flatten_groups=True merges groups into a single list with group info included.
+    """
     mock_results_container = MagicMock()
     grouped_data = {
         "group1": [{"prop1": "val1"}],
@@ -717,6 +756,9 @@ def test_to_json_flatten_groups(instance):
 
 
 def test_to_json_pretty(instance):
+    """
+    Tests to_json with pretty=True outputs indented JSON string.
+    """
     mock_results_container = MagicMock()
     data = [{"prop1": "val1"}]
     mock_results_container.to_props.return_value = data
@@ -728,6 +770,9 @@ def test_to_json_pretty(instance):
 
 
 def test_to_json_with_groups_filter(instance):
+    """
+    Tests to_json filters groups correctly when groups parameter is provided.
+    """
     mock_results_container = MagicMock()
     grouped_data = {
         "group1": [{"prop1": "val1"}],
