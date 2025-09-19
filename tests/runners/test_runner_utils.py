@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, NonCallableMock, call
 
 import pytest
-from openstack.exceptions import ResourceNotFound, ForbiddenException
+from openstack.exceptions import ForbiddenException, ResourceNotFound
 
 from openstackquery.exceptions.parse_query_error import ParseQueryError
 from openstackquery.runners.runner_utils import RunnerUtils
@@ -39,6 +39,56 @@ def run_paginated_query_test(number_iterations):
         10,
     )
     assert res == expected_out
+
+
+def test_run_paginated_query_exceeds_call_limit():
+    """
+    Test that run_paginated_query terminates early when num_calls exceeds call_limit.
+    """
+    mock_paginated_call = MagicMock()
+    mock_marker_prop_func = MagicMock(wraps=lambda resource: resource["id"])
+
+    pagination_order = [[{"id": f"marker{i}"}] for i in range(5)]
+    pagination_order.append([])  # terminate eventually
+
+    mock_paginated_call.side_effect = pagination_order
+
+    # Set call_limit lower than pages to force early termination
+    res = RunnerUtils.run_paginated_query(
+        mock_paginated_call,
+        mock_marker_prop_func,
+        server_side_filter_set={},
+        page_size=1,
+        call_limit=3,
+    )
+
+    # It should have stopped after call_limit iterations, so fewer than 5 results
+    assert len(res) < 5
+
+
+def test_run_paginated_query_detects_duplicate_entries():
+    """
+    Test that run_paginated_query terminates early if duplicate resource detected within one page.
+    """
+
+    mock_paginated_call = MagicMock()
+
+    # The paginated call yields the same resource twice in a row
+    duplicate_resource = {"id": "same_id"}
+    mock_paginated_call.return_value = iter([duplicate_resource, duplicate_resource])
+
+    mock_marker_prop_func = MagicMock(wraps=lambda resource: resource["id"])
+
+    res = RunnerUtils.run_paginated_query(
+        mock_paginated_call,
+        mock_marker_prop_func,
+        server_side_filter_set={},
+        page_size=10,
+        call_limit=10,
+    )
+
+    # The result should only include the first resource (second triggers break)
+    assert res == [duplicate_resource]
 
 
 def test_run_pagination_query_gt_0():
