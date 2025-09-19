@@ -535,6 +535,14 @@ def test_parse_select_overwrites_old(instance):
     assert instance.selected_props == [MockProperties.PROP_2]
 
 
+def test_parse_select_with_string_alias(instance):
+    """
+    Tests that parse_select can handle string alias inputs and convert them using from_string
+    """
+    instance.parse_select("PROP_1")
+    assert instance.selected_props == [MockProperties.PROP_1]
+
+
 # pylint:disable=W0212 # Allow protected-access for tests
 
 
