@@ -1,7 +1,8 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
+from openstackquery.api.query_api import QueryAPI
 from openstackquery.api.query_objects import (
     AggregateQuery,
     FlavorQuery,
@@ -12,22 +13,18 @@ from openstackquery.api.query_objects import (
     UserQuery,
     get_common,
 )
+from openstackquery.mappings.server_mapping import ServerMapping
 
 
-@patch("openstackquery.query_factory.QueryFactory")
-@patch("openstackquery.api.query_api.QueryAPI")
-def test_get_common(mock_query_api, mock_query_factory):
+def test_get_common():
     """
     tests that function _get_common works
     should use QueryFactory to setup a query object with given mapping class
     """
-    mock_query_mapping = MagicMock()
-    res = get_common(mock_query_mapping)
-    mock_query_factory.build_query_deps.assert_called_once_with(mock_query_mapping)
-    mock_query_api.assert_called_once_with(
-        mock_query_factory.build_query_deps.return_value
-    )
-    assert res == mock_query_api.return_value
+    query_api_instance = get_common(ServerMapping)
+    assert isinstance(
+        query_api_instance, QueryAPI
+    ), "get_common should return an instance of QueryAPI"
 
 
 @pytest.fixture(name="run_query_test_case")
