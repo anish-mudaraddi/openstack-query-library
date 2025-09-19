@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 import pytest
 from time_utils import TimeUtils
 
@@ -69,11 +70,12 @@ def test_convert_to_timestamp():
     assert out == "timestamp-out"
 
 
-def test_extract_uptime_not_string():
+@pytest.mark.parametrize("mock_string", [None, "invalid_string"])
+def test_extract_uptime_invalid_string(mock_string):
     """
-    Test extraction returns None when not a string
+    Test extraction returns None when not a valid uptime string
     """
-    assert TimeUtils.extract_uptime(None) is None
+    assert TimeUtils.extract_uptime(mock_string) is None
 
 
 @pytest.mark.parametrize(
