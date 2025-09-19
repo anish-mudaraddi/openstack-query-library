@@ -15,3 +15,12 @@ class MockProperties(PropEnum):
     PROP_2 = 2
     PROP_3 = 3
     PROP_4 = 4
+
+    @staticmethod
+    def _get_aliases():
+        return {
+            MockProperties.PROP_1: ["PROP_1", "prop_1"],
+            MockProperties.PROP_2: ["PROP_2"],
+            MockProperties.PROP_3: ["PROP_3"],
+            MockProperties.PROP_4: ["PROP_4"],
+        }
