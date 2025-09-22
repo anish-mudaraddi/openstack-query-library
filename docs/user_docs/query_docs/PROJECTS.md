@@ -51,6 +51,8 @@ The following shared-common properties are listed below (as well as the Query ob
 | Prop 1 | Prop 2       | Type        | Maps                            |
 |--------|--------------|-------------|---------------------------------|
 | "id"   | "project_id" | One-to-Many | `ProjectQuery` to `ServerQuery` |
+| "id"   | "owner"      | One-to-Many | `ProjectQuery` to `ServerQuery` |
+
 
 
 ## Chaining to
@@ -59,6 +61,7 @@ Chaining from other `ProjectQuery` requires passing `PROJECT_QUERY` or any alias
 | From          | Prop 1       | Prop 2 | Type        | Documentation            |
 |---------------|--------------|--------|-------------|--------------------------|
 | `ServerQuery` | "project_id" | "id"   | Many-to-One | [SERVERS.md](SERVERS.md) |
+| `ImageQuery`  | "owner"      | "id"   | Many-to-One | [IMAGES.md](IMAGES.md)
 
 
 ## run() meta-parameters
