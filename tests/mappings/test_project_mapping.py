@@ -1,3 +1,4 @@
+from openstackquery.enums.props.image_properties import ImageProperties
 from openstackquery.enums.props.project_properties import ProjectProperties
 from openstackquery.enums.props.server_properties import ServerProperties
 from openstackquery.enums.query_presets import QueryPresets
@@ -128,6 +129,11 @@ def test_get_chain_mappings():
     """
     Tests get_chain_mapping outputs correctly
     """
-    expected_mappings = {ProjectProperties.PROJECT_ID: [ServerProperties.PROJECT_ID]}
+    expected_mappings = {
+        ProjectProperties.PROJECT_ID: [
+            ServerProperties.PROJECT_ID,
+            ImageProperties.IMAGE_OWNER,
+        ]
+    }
 
     assert set(ProjectMapping.get_chain_mappings()) == set(expected_mappings)

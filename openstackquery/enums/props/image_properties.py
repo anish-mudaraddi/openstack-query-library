@@ -1,4 +1,6 @@
+import json
 from enum import auto
+
 from openstackquery.enums.props.prop_enum import PropEnum
 from openstackquery.exceptions.query_property_mapping_error import (
     QueryPropertyMappingError,
@@ -19,6 +21,8 @@ class ImageProperties(PropEnum):
     IMAGE_NAME = auto()
     IMAGE_SIZE = auto()
     IMAGE_STATUS = auto()
+    IMAGE_OWNER = auto()
+    IMAGE_METADATA = auto()
 
     @staticmethod
     def _get_aliases():
@@ -35,6 +39,8 @@ class ImageProperties(PropEnum):
             ImageProperties.IMAGE_NAME: ["name"],
             ImageProperties.IMAGE_SIZE: ["size"],
             ImageProperties.IMAGE_STATUS: ["status"],
+            ImageProperties.IMAGE_OWNER: ["owner", "tenant"],
+            ImageProperties.IMAGE_METADATA: ["metadata"],
         }
 
     @staticmethod
@@ -55,6 +61,8 @@ class ImageProperties(PropEnum):
             ImageProperties.IMAGE_NAME: lambda a: a["name"],
             ImageProperties.IMAGE_SIZE: lambda a: a["size"],
             ImageProperties.IMAGE_STATUS: lambda a: a["status"],
+            ImageProperties.IMAGE_OWNER: lambda a: a["metadata"]["owner_id"],
+            ImageProperties.IMAGE_METADATA: lambda a: json.dumps(a["metadata"]),
         }
         try:
             return mapping[prop]

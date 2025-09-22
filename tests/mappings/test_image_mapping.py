@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 from openstackquery.enums.props.image_properties import ImageProperties
+from openstackquery.enums.props.project_properties import ProjectProperties
 from openstackquery.enums.props.server_properties import ServerProperties
 from openstackquery.enums.query_presets import QueryPresets
 from openstackquery.handlers.server_side_handler import ServerSideHandler
@@ -37,13 +38,14 @@ def test_server_side_handler_mappings_equal_to(server_side_test_mappings):
     mappings = {
         ImageProperties.IMAGE_NAME: "name",
         ImageProperties.IMAGE_STATUS: "status",
+        ImageProperties.IMAGE_OWNER: "owner",
     }
 
     server_side_test_mappings(
         ImageMapping,
         QueryPresets.EQUAL_TO,
         mappings,
-        test_case=(True, True),
+        test_case=(True, True, True),
     )
 
 
@@ -59,11 +61,12 @@ def test_server_side_handler_mappings_any_in(server_side_any_in_mappings):
     mappings = {
         ImageProperties.IMAGE_NAME: "name",
         ImageProperties.IMAGE_STATUS: "status",
+        ImageProperties.IMAGE_OWNER: "owner",
     }
     server_side_any_in_mappings(
         ImageMapping,
         mappings,
-        {"test1": "test1", "test2": "test2"},
+        {"test1": "test1", "test2": "test2", "test3": "test3"},
     )
 
 
@@ -238,9 +241,11 @@ def test_client_side_handler(client_side_test_mappings):
         QueryPresets.NOT_ANY_IN: ["*"],
         QueryPresets.MATCHES_REGEX: [
             ImageProperties.IMAGE_NAME,
+            ImageProperties.IMAGE_METADATA,
         ],
         QueryPresets.NOT_MATCHES_REGEX: [
             ImageProperties.IMAGE_NAME,
+            ImageProperties.IMAGE_METADATA,
         ],
         QueryPresets.OLDER_THAN: date_prop_list,
         QueryPresets.OLDER_THAN_OR_EQUAL_TO: date_prop_list,
@@ -260,6 +265,7 @@ def test_get_chain_mappings():
     """
     expected_mappings = {
         ImageProperties.IMAGE_ID: [ServerProperties.IMAGE_ID],
+        ImageProperties.IMAGE_OWNER: [ProjectProperties.PROJECT_ID],
     }
 
     assert set(ImageMapping.get_chain_mappings()) == set(expected_mappings)
