@@ -1,11 +1,11 @@
 from unittest.mock import patch
+
 import pytest
 
 from openstackquery.enums.props.project_properties import ProjectProperties
 from openstackquery.exceptions.query_property_mapping_error import (
     QueryPropertyMappingError,
 )
-
 from tests.mocks.mocked_props import MockProperties
 
 
@@ -25,6 +25,7 @@ from tests.mocks.mocked_props import MockProperties
         ),
         (ProjectProperties.PROJECT_NAME, ["project_name", "name"]),
         (ProjectProperties.PROJECT_PARENT_ID, ["project_parent_id", "parent_id"]),
+        (ProjectProperties.PROJECT_TAGS, ["project_tags", "tags"]),
     ],
 )
 def test_property_serialization(expected_prop, test_values, property_variant_generator):

@@ -115,10 +115,12 @@ def test_client_side_handlers_string(client_side_test_mappings):
         QueryPresets.MATCHES_REGEX: [
             ProjectProperties.PROJECT_NAME,
             ProjectProperties.PROJECT_DESCRIPTION,
+            ProjectProperties.PROJECT_TAGS,
         ],
         QueryPresets.NOT_MATCHES_REGEX: [
             ProjectProperties.PROJECT_NAME,
             ProjectProperties.PROJECT_DESCRIPTION,
+            ProjectProperties.PROJECT_TAGS,
         ],
     }
     client_side_test_mappings(handler, mappings)
