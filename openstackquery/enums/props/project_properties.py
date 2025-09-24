@@ -1,4 +1,7 @@
+import json
+import re
 from enum import auto
+
 from openstackquery.enums.props.prop_enum import PropEnum
 from openstackquery.exceptions.query_property_mapping_error import (
     QueryPropertyMappingError,
@@ -17,6 +20,8 @@ class ProjectProperties(PropEnum):
     PROJECT_IS_ENABLED = auto()
     PROJECT_NAME = auto()
     PROJECT_PARENT_ID = auto()
+    PROJECT_TAGS = auto()
+    PROJECT_EMAIL = auto()
 
     @staticmethod
     def _get_aliases():
@@ -31,7 +36,20 @@ class ProjectProperties(PropEnum):
             ProjectProperties.PROJECT_IS_ENABLED: ["is_enabled"],
             ProjectProperties.PROJECT_NAME: ["name"],
             ProjectProperties.PROJECT_PARENT_ID: ["parent_id"],
+            ProjectProperties.PROJECT_TAGS: ["tags"],
+            ProjectProperties.PROJECT_EMAIL: ["email"],
         }
+
+    @staticmethod
+    def __extract_email_from_tags(tags):
+        return next(
+            (
+                tag
+                for tag in tags
+                if re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,4}$", str(tag))
+            ),
+            None,
+        )
 
     @staticmethod
     def get_prop_mapping(prop):
@@ -49,6 +67,10 @@ class ProjectProperties(PropEnum):
             ProjectProperties.PROJECT_IS_ENABLED: lambda a: a["is_enabled"],
             ProjectProperties.PROJECT_NAME: lambda a: a["name"],
             ProjectProperties.PROJECT_PARENT_ID: lambda a: a["parent_id"],
+            ProjectProperties.PROJECT_TAGS: lambda a: json.dumps(a.get("tags", [])),
+            ProjectProperties.PROJECT_EMAIL: lambda a: ProjectProperties.__extract_email_from_tags(
+                a.get("tags", [])
+            ),
         }
         try:
             return mapping[prop]

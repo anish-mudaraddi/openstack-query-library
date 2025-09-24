@@ -27,6 +27,8 @@ A `Project` has the following properties:
 | `bool`      | "is_enabled"                        | Indicates whether users can authorize against this project. <br/>if set to False, users cannot access project, additionally all authorized tokens are invalidated. |
 | `string`    | "name"                              | Name of the project.                                                                                                                                               |
 | `string`    | "parent_id"                         | The ID of the parent of the project.                                                                                                                               |
+| `string`    | "tags"                              | JSON-formatted string of a list of project tags (usually one of these is an email)                                                                                 |
+| `string`    | "email"                             | The first email found in tags, or None (which outputs in results as 'Not Found').                                                                                  |
 
 Any of these properties can be used for any of the API methods that takes a property - like `select`, `where`, `sort_by` etc
 
