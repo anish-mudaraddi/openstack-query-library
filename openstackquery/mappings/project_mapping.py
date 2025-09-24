@@ -108,11 +108,13 @@ class ProjectMapping(MappingInterface):
                     ProjectProperties.PROJECT_NAME,
                     ProjectProperties.PROJECT_DESCRIPTION,
                     ProjectProperties.PROJECT_TAGS,
+                    ProjectProperties.PROJECT_EMAIL,
                 ],
                 QueryPresets.NOT_MATCHES_REGEX: [
                     ProjectProperties.PROJECT_NAME,
                     ProjectProperties.PROJECT_DESCRIPTION,
                     ProjectProperties.PROJECT_TAGS,
+                    ProjectProperties.PROJECT_EMAIL,
                 ],
             }
         )

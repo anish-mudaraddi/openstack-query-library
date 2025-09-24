@@ -111,17 +111,15 @@ def test_client_side_handlers_string(client_side_test_mappings):
     client side params for string presets
     """
     handler = ProjectMapping.get_client_side_handler()
+    string_properties = [
+        ProjectProperties.PROJECT_NAME,
+        ProjectProperties.PROJECT_DESCRIPTION,
+        ProjectProperties.PROJECT_TAGS,
+        ProjectProperties.PROJECT_EMAIL,
+    ]
     mappings = {
-        QueryPresets.MATCHES_REGEX: [
-            ProjectProperties.PROJECT_NAME,
-            ProjectProperties.PROJECT_DESCRIPTION,
-            ProjectProperties.PROJECT_TAGS,
-        ],
-        QueryPresets.NOT_MATCHES_REGEX: [
-            ProjectProperties.PROJECT_NAME,
-            ProjectProperties.PROJECT_DESCRIPTION,
-            ProjectProperties.PROJECT_TAGS,
-        ],
+        QueryPresets.MATCHES_REGEX: string_properties,
+        QueryPresets.NOT_MATCHES_REGEX: string_properties,
     }
     client_side_test_mappings(handler, mappings)
 
