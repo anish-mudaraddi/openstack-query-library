@@ -1,15 +1,14 @@
-from unittest.mock import MagicMock, patch, NonCallableMock
-import pytest
+from unittest.mock import MagicMock, NonCallableMock, patch
 
-from openstackquery.query_blocks.query_builder import QueryBuilder
+import pytest
 
 from openstackquery.exceptions.query_preset_mapping_error import QueryPresetMappingError
 from openstackquery.exceptions.query_property_mapping_error import (
     QueryPropertyMappingError,
 )
-
-from tests.mocks.mocked_query_presets import MockQueryPresets
+from openstackquery.query_blocks.query_builder import QueryBuilder
 from tests.mocks.mocked_props import MockProperties
+from tests.mocks.mocked_query_presets import MockQueryPresets
 
 
 @pytest.fixture(name="mock_client_side_handler")
@@ -354,8 +353,8 @@ def test_client_side_filters(instance):
     """
     Tests client_side_filter property methods
     """
-    instance.client_side_filter = ["some-client-side-filter"]
-    res = instance.client_side_filter
+    instance.client_side_filters = ["some-client-side-filter"]
+    res = instance.client_side_filters
     assert res == ["some-client-side-filter"]
 
 

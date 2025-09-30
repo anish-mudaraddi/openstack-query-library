@@ -1,4 +1,5 @@
-from unittest.mock import patch, NonCallableMock
+from unittest.mock import NonCallableMock, patch
+
 import pytest
 
 from openstackquery.query_blocks.query_parser import QueryParser
@@ -16,6 +17,19 @@ def instance_fixture(mock_sorter, mock_grouper):
     mock_sorter.assert_called_once_with(mock_prop_enum_cls)
     mock_grouper.assert_called_once_with(mock_prop_enum_cls)
     return parser
+
+
+# pylint:disable=W0212 # Allow protected-access for tests
+
+
+def test_reset_group_by(instance):
+    """
+    Tests reset_group_by method resets the _group flag to False
+    """
+    # Set _group to True via parse_group_by
+    instance._group = True
+    instance.reset_group_by()
+    assert instance._group is False
 
 
 def test_parse_group_by(instance):

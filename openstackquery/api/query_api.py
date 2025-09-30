@@ -1,15 +1,13 @@
 import logging
 from copy import deepcopy
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from openstackquery.aliases import OpenstackResourceObj, PropValue
 from openstackquery.enums.props.prop_enum import PropEnum
 from openstackquery.enums.query_presets import QueryPresets
 from openstackquery.enums.sort_order import SortOrder
 from openstackquery.exceptions.parse_query_error import ParseQueryError
-
-if TYPE_CHECKING:
-    from openstackquery.structs.query_components import QueryComponents
+from openstackquery.structs.query_components import QueryComponents
 
 logger = logging.getLogger(__name__)
 

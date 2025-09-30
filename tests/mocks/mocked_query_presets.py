@@ -1,4 +1,5 @@
 from typing import Dict
+
 from openstackquery.enums.enum_with_aliases import EnumWithAliases
 
 # pylint:disable=too-few-public-methods
@@ -11,8 +12,12 @@ class MockQueryPresets(EnumWithAliases):
 
     @staticmethod
     def _get_aliases() -> Dict:
-        # No mock aliases
-        return {}
+        return {
+            "item_1": MockQueryPresets.ITEM_1,
+            "item_2": MockQueryPresets.ITEM_2,
+            "item_3": MockQueryPresets.ITEM_3,
+            "item_4": MockQueryPresets.ITEM_4,
+        }
 
     ITEM_1 = 1
     ITEM_2 = 2

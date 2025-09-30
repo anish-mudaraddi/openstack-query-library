@@ -4,6 +4,7 @@ import pytest
 
 from openstackquery.api.query_api import QueryAPI
 from openstackquery.exceptions.parse_query_error import ParseQueryError
+from openstackquery.query_blocks.query_output import QueryOutput
 from tests.mocks.mocked_props import MockProperties
 from tests.mocks.mocked_query_presets import MockQueryPresets
 
@@ -40,6 +41,16 @@ def test_select_with_one_prop(instance):
         MockProperties.PROP_1, select_all=False
     )
     assert res == instance
+
+
+def test_select_with_alias_string_sets_selected_props(instance):
+    """
+    Tests that calling select with a string alias sets selected_props
+    to the correct Enum member in the output.
+    """
+    instance.output = QueryOutput(MockQueryPresets)
+    instance.select("item_1")
+    assert instance.output.selected_props == [MockQueryPresets.ITEM_1]
 
 
 def test_select_with_many_props(instance):

@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING, Type
+from typing import Type
 
+from openstackquery.api.query_api import QueryAPI
 from openstackquery.mappings.aggregate_mapping import AggregateMapping
 from openstackquery.mappings.flavor_mapping import FlavorMapping
 from openstackquery.mappings.hypervisor_mapping import HypervisorMapping
@@ -8,9 +9,7 @@ from openstackquery.mappings.mapping_interface import MappingInterface
 from openstackquery.mappings.project_mapping import ProjectMapping
 from openstackquery.mappings.server_mapping import ServerMapping
 from openstackquery.mappings.user_mapping import UserMapping
-
-if TYPE_CHECKING:
-    from openstackquery.api.query_api import QueryAPI
+from openstackquery.query_factory import QueryFactory
 
 
 def get_common(query_mapping: Type[MappingInterface]) -> "QueryAPI":
@@ -19,10 +18,6 @@ def get_common(query_mapping: Type[MappingInterface]) -> "QueryAPI":
     using QueryFactory
     :param query_mapping: a mapping class that defines property, runner and handler mappings
     """
-    # pylint: disable=import-outside-toplevel
-    from openstackquery.api.query_api import QueryAPI
-    from openstackquery.query_factory import QueryFactory
-
     return QueryAPI(QueryFactory.build_query_deps(query_mapping))
 
 
