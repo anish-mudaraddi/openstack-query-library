@@ -1,6 +1,7 @@
 from typing import Type
 
 from openstackquery.aliases import QueryChainMappings
+from openstackquery.enums.props.image_properties import ImageProperties
 from openstackquery.enums.props.project_properties import ProjectProperties
 from openstackquery.enums.props.server_properties import ServerProperties
 from openstackquery.enums.query_presets import QueryPresets
@@ -22,7 +23,12 @@ class ProjectMapping(MappingInterface):
         Should return a dictionary containing property pairs mapped to query mappings.
         This is used to define how to chain results from this query to other possible queries
         """
-        return {ProjectProperties.PROJECT_ID: [ServerProperties.PROJECT_ID]}
+        return {
+            ProjectProperties.PROJECT_ID: [
+                ServerProperties.PROJECT_ID,
+                ImageProperties.IMAGE_OWNER,
+            ]
+        }
 
     @staticmethod
     def get_runner_mapping() -> Type[ProjectRunner]:

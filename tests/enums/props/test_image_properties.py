@@ -1,11 +1,11 @@
 from unittest.mock import patch
+
 import pytest
 
 from openstackquery.enums.props.image_properties import ImageProperties
 from openstackquery.exceptions.query_property_mapping_error import (
     QueryPropertyMappingError,
 )
-
 from tests.mocks.mocked_props import MockProperties
 
 
@@ -30,6 +30,10 @@ from tests.mocks.mocked_props import MockProperties
         (ImageProperties.IMAGE_NAME, ["image_name", "name"]),
         (ImageProperties.IMAGE_SIZE, ["image_size", "size"]),
         (ImageProperties.IMAGE_STATUS, ["image_status", "status"]),
+        (
+            ImageProperties.IMAGE_OWNER,
+            ["image_owner", "owner", "tenant"],
+        ),
     ],
 )
 def test_property_serialization(expected_prop, test_values, property_variant_generator):

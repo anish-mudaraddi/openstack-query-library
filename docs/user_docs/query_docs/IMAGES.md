@@ -27,10 +27,12 @@ An `Image` has the following properties:
 | `string`     | "id", "uuid"                        | ID of the image                                                     |
 | `string` (x) | "updated_at"                        | The timestamp when this image was last updated                      |
 | `int`        | "min_ram", "ram"                    | The minimum disk size in GB that is required to boot the image.     |
-| `int`        | "min_disk", "disk"                  | The minimum amount of RAM in MB that is required to boot the image. |
-| `string`     | "name"                              | Name of the Image                                                   |
-| `int`        | "size"                              | The size of the image data, in bytes.                               |
-| `string`     | "status"                            | Image status                                                        |
+| `int`        | "min_disk", "disk"                  | The minimum amount of RAM in MB that is required to boot the image.      |
+| `string`     | "name"                              | Name of the Image                                                        |
+| `int`        | "size"                              | The size of the image data, in bytes.                                    |
+| `string`     | "status"                            | Image status                                                             |
+| `string`     | "owner", "tenant"                   | ID of the project which owns the image. Might be None i.e. for public images, which outputs in results as 'Not Found'. |
+| `string`     | "metadata"                          | Full metadata dictionary (as JSON-formatted string) |
 
 (x) - These are UTC timestamps in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format
 Any of these properties can be used for any of the API methods that takes a property - like `select`, `where`, `sort_by` etc
@@ -55,6 +57,7 @@ The following shared-common properties are listed below (as well as the Query ob
 | Prop 1 | Prop 2     | Type        | Maps                          | Documentation            |
 |--------|------------|-------------|-------------------------------|--------------------------|
 | "id"   | "image_id" | One-to-Many | `ImageQuery` to `ServerQuery` | [SERVERS.md](SERVERS.md) |
+| "owner"| "id"       | Many-to-One  | `ImageQuery` to `ProjectQuery`| [PROJECTS.md](PROJECTS.md)
 
 
 ## Chaining to
@@ -63,6 +66,7 @@ Chaining from other `ImageQuery` requires passing `image_query` or any of the al
 | From          | Prop 1 | Prop 2     | Type        | Documentation            |
 |---------------|--------|------------|-------------|--------------------------|
 | `ServerQuery` | "id"   | "image_id" | Many-to-One | [SERVERS.md](SERVERS.md) |
+| `ProjectQuery`| "id"   | "owner"    | One-to-Many | [PROJECTS.md](PROJECTS.md)
 
 
 ## run() meta-parameters

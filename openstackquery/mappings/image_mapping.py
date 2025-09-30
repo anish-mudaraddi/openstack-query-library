@@ -2,6 +2,7 @@ from typing import Type
 
 from openstackquery.aliases import QueryChainMappings
 from openstackquery.enums.props.image_properties import ImageProperties
+from openstackquery.enums.props.project_properties import ProjectProperties
 from openstackquery.enums.props.server_properties import ServerProperties
 from openstackquery.enums.query_presets import QueryPresets
 from openstackquery.handlers.client_side_handler import ClientSideHandler
@@ -23,7 +24,10 @@ class ImageMapping(MappingInterface):
         Return a dictionary containing property pairs mapped to query mappings.
         This is used to define how to chain results from this query to other possible queries
         """
-        return {ImageProperties.IMAGE_ID: [ServerProperties.IMAGE_ID]}
+        return {
+            ImageProperties.IMAGE_ID: [ServerProperties.IMAGE_ID],
+            ImageProperties.IMAGE_OWNER: [ProjectProperties.PROJECT_ID],
+        }
 
     @staticmethod
     def get_runner_mapping() -> Type[ImageRunner]:
@@ -54,6 +58,7 @@ class ImageMapping(MappingInterface):
                 QueryPresets.EQUAL_TO: {
                     ImageProperties.IMAGE_NAME: lambda value: {"name": value},
                     ImageProperties.IMAGE_STATUS: lambda value: {"status": value},
+                    ImageProperties.IMAGE_OWNER: lambda value: {"owner": value},
                 },
                 QueryPresets.ANY_IN: {
                     ImageProperties.IMAGE_NAME: lambda values: [
@@ -61,6 +66,9 @@ class ImageMapping(MappingInterface):
                     ],
                     ImageProperties.IMAGE_STATUS: lambda values: [
                         {"status": value} for value in values
+                    ],
+                    ImageProperties.IMAGE_OWNER: lambda values: [
+                        {"owner": value} for value in values
                     ],
                 },
                 QueryPresets.OLDER_THAN: {
@@ -127,8 +135,14 @@ class ImageMapping(MappingInterface):
                 QueryPresets.NOT_EQUAL_TO: ["*"],
                 QueryPresets.ANY_IN: ["*"],
                 QueryPresets.NOT_ANY_IN: ["*"],
-                QueryPresets.MATCHES_REGEX: [ImageProperties.IMAGE_NAME],
-                QueryPresets.NOT_MATCHES_REGEX: [ImageProperties.IMAGE_NAME],
+                QueryPresets.MATCHES_REGEX: [
+                    ImageProperties.IMAGE_NAME,
+                    ImageProperties.IMAGE_METADATA,
+                ],
+                QueryPresets.NOT_MATCHES_REGEX: [
+                    ImageProperties.IMAGE_NAME,
+                    ImageProperties.IMAGE_METADATA,
+                ],
                 QueryPresets.YOUNGER_THAN: date_prop_list,
                 QueryPresets.YOUNGER_THAN_OR_EQUAL_TO: date_prop_list,
                 QueryPresets.OLDER_THAN: date_prop_list,
