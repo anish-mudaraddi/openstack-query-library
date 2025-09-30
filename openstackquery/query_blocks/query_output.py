@@ -272,11 +272,9 @@ class QueryOutput:
 
     @staticmethod
     def _convert_to_csv_string(data: Union[List, Dict]) -> str:
+        if not data:
+            return ""
         output = io.StringIO()
-        if not data or not (len(data) > 0 and data[0].keys()):
-            raise RuntimeError(
-                "Error: Could not write to csv: No results found, or no properties selected to output"
-            )
         fields = data[0].keys()
         writer = csv.DictWriter(output, fieldnames=fields)
         writer.writeheader()
@@ -298,6 +296,9 @@ class QueryOutput:
         """
         results = results_container.to_props(*self.selected_props)
         results = self._validate_groups(results, groups)
+
+        if not len(results) > 0:
+            return ",".join([prop.name.lower() for prop in self.selected_props])
 
         if flatten_groups and isinstance(results, dict):
             merged_list = []

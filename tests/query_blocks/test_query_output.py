@@ -560,20 +560,9 @@ def test_convert_csv_to_string(instance):
     assert csv_str == expected_csv
 
 
-def test_convert_to_csv_string_raises_on_empty_data(instance):
-    """
-    Tests that _convert_to_csv_string raises RuntimeError when given an empty list.
-    """
-    with pytest.raises(RuntimeError):
-        instance._convert_to_csv_string([])
-
-
-def test_convert_to_csv_string_raises_on_empty_dict_keys(instance):
-    """
-    Tests that _convert_to_csv_string raises RuntimeError when given a list with empty dicts.
-    """
-    with pytest.raises(RuntimeError):
-        instance._convert_to_csv_string([{}])
+def test_convert_to_csv_string_returns_empty_on_empty_data(instance):
+    output = instance._convert_to_csv_string([])
+    assert output == ""
 
 
 def test_flatten_list_with_empty_data():
@@ -679,6 +668,25 @@ def test_to_csv_with_group_filtering(instance):
     assert "val1,val2" not in csv_output
 
     instance._validate_groups.assert_called_once_with(grouped_data, ["group2"])
+
+
+def test_to_csv_empty_results(instance):
+    mock_results_container = MagicMock()
+    mock_results_container.to_props.return_value = []
+
+    val = {
+        MockProperties.PROP_1,
+        MockProperties.PROP_2,
+        MockProperties.PROP_3,
+    }
+    instance.selected_props = val
+
+    result = instance.to_csv(mock_results_container)
+    mock_results_container.to_props.assert_called_once_with(*instance.selected_props)
+
+    print(result)
+
+    assert result == ",".join([prop.name.lower() for prop in instance.selected_props])
 
 
 # pylint:enable=W0212
