@@ -1,7 +1,0 @@
-pytest
-pytest-cov
-pylint
-openstacksdk
-pre-commit
-tabulate
-osc-placement

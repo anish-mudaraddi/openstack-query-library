@@ -1,82 +1,66 @@
-name: build and release openstackquery package
+name: Bump, Build & Release
 
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: "Version to release - make sure its same as setup.py"
+      bump-type:
+        description: 'Bump type'
         required: true
-      changelog:
-        description: "Release changelog description"
-        required: false
+        default: 'patch'
+        type: choice
+        options:
+        - major
+        - minor
+        - patch
+
+permissions:
+  contents: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/main'
-
-    strategy:
-      matrix:
-        python-version: ["3.8"]
-
     steps:
-      - name: Checkout code
+      - name: "Setup Github Token"
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+      
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Bump version
+        id: bump
+        uses: callowayproject/bump-my-version@master
+        env:
+          BUMPVERSION_TAG: "true"
+        with:
+          args: ${{ inputs.bump-type }}
+          github-token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Check
+        if: steps.bump.outputs.bumped == 'true'
         run: |
-          python -m pip install --upgrade pip
-          pip install setuptools wheel build
+          echo "Version was bumped from ${{ steps.bump.outputs.previous-version }} to ${{ steps.bump.outputs.current-version }}!"
 
       - name: Build package
-        run: python -m build
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-${{ matrix.python-version }}
-          path: dist/
-
-  publish:
-    needs: release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: dist
-
-      - name: Generate Changelog
-        id: changelog
+        if: steps.bump.outputs.bumped == 'true'
         run: |
-          if [ -z "${{ github.event.inputs.changelog }}" ]; then
-            echo "changelog=Release version ${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "changelog=${{ github.event.inputs.changelog }}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create Git Tag
-        uses: EndBug/latest-tag@latest
-        with:
-          tag-name: v${{ github.event.inputs.version }}
+          pip install build
+          python -m build
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        if: steps.bump.outputs.bumped == 'true'
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.version }}
-          body: ${{ steps.changelog.outputs.changelog }}
-          files: |
-            dist/**/*.whl
-            dist/**/*.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ steps.bump.outputs.current-version }}
+          name: Release ${{ steps.bump.outputs.current-version }}
+          files: dist/*
+          token: "${{ steps.app-token.outputs.token }}"

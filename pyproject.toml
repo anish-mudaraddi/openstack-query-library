@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["openstackquery"]
+
+[project]
+name = "openstackquery"
+version = "2.0.0"
+description = "Python package for running complex queries on OpenStack Resources"
+authors = [{name = "STFC Cloud Team", email = "cloud-support@stfc.ac.uk"}]
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["python", "openstack"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Openstack Admins :: Monitoring Tools",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "openstacksdk",
+    "tabulate",
+]
+
+[project.urls]
+Repository = "https://github.com/stfc/openstack-query-library"
+Documentation = "https://github.com/stfc/openstack-query-library/README.md"
+Issues = "https://github.com/stfc/openstack-query-library/issues"
+
+# Optional dependency groups
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "pylint",
+]
+
+dev = [
+    "bumpversion"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["openstacksdk"]
+testpaths = ["tests"]
+python_files = ["*.py"]
+python_functions = ["test_*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.pylint.format]
+max-line-length=118
+disable=[
+    "C0114", # Missing module string - we don't need module strings for the small repo
+    "C0115", # Missing class doc string - a lot of the actions are self explanatory
+    "W0511", # TODOs they're well....to do later
+    "R0801", # Similar lines - Imports and method signatures will flag this, such as forwarding action args
+    "C0116", # Missing method docstring - Adds too much noise
+    "R0913", # Too many arguments - same as above
+]
+
+
+[tool.bumpversion]
+current_version = "2.0.0"
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
+serialize = ["{major}.{minor}.{patch}"]
+search = "{current_version}"
+replace = "{new_version}"
+regex = false
+ignore_missing_version = false
+ignore_missing_files = false
+tag = false
+allow_dirty = true
+commit = true
+message = "Bump version: {current_version} → {new_version}"
+moveable_tags = []
+commit_args = "--no-verify"
+setup_hooks = []
+pre_commit_hooks = []
+post_commit_hooks = []
+
